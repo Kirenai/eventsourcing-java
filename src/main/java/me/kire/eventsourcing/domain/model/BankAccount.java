@@ -40,13 +40,23 @@ public class BankAccount {
     }
 
     public void onEvent(Event event) {
-        if (event instanceof AccountCreated(String accountIdCreated)) {
-            this.accountId = accountIdCreated;
-        } else if (event instanceof MoneyDeposited(String ignored, Double amount)) {
-            this.balance += amount;
-        } else if (event instanceof MoneyWithdrawn(String ignored, Double amount)) {
-            this.balance -= amount;
+        switch (event) {
+            case AccountCreated accountCreated -> this.handleAccountCreated(accountCreated);
+            case MoneyDeposited moneyDeposited -> this.handleMoneyDeposited(moneyDeposited);
+            case MoneyWithdrawn moneyWithdrawn -> this.handleMoneyWithdrawn(moneyWithdrawn);
         }
+    }
+
+    private void handleMoneyWithdrawn(MoneyWithdrawn moneyWithdrawn) {
+        this.balance -= moneyWithdrawn.amount();
+    }
+
+    private void handleMoneyDeposited(MoneyDeposited moneyDeposited) {
+        this.balance += moneyDeposited.amount();
+    }
+
+    private void handleAccountCreated(AccountCreated accountCreated) {
+        this.accountId = accountCreated.accountId();
     }
 
     public List<Event> getUncommittedChanges() {
