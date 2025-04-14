@@ -6,15 +6,15 @@ import static me.kire.eventsourcing.domain.event.Event.EventType.MONEY_DEPOSITED
 
 public record MoneyDeposited(
         String accountId,
-        Double amount
+        Double amount,
+        Instant occurredOn
 ) implements Event {
-    @Override
-    public EventType type() {
-        return MONEY_DEPOSITED;
+    public MoneyDeposited(String accountId, Double amount) {
+        this(accountId, amount, Instant.now());
     }
 
     @Override
-    public Instant occurredOn() {
-        return Instant.now();
+    public EventType type() {
+        return MONEY_DEPOSITED;
     }
 }

@@ -7,7 +7,6 @@ public sealed interface Event permits
         MoneyDeposited,
         MoneyWithdrawn {
     EventType type();
-
     Instant occurredOn();
 
     enum EventType {
