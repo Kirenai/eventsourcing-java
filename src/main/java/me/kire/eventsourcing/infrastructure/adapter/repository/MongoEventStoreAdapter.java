@@ -3,6 +3,7 @@ package me.kire.eventsourcing.infrastructure.adapter.repository;
 import lombok.RequiredArgsConstructor;
 import me.kire.eventsourcing.domain.event.AccountCreated;
 import me.kire.eventsourcing.domain.event.Event;
+import me.kire.eventsourcing.domain.event.Event.EventType;
 import me.kire.eventsourcing.domain.event.MoneyDeposited;
 import me.kire.eventsourcing.domain.event.MoneyWithdrawn;
 import me.kire.eventsourcing.domain.port.out.EventStorePort;
@@ -27,7 +28,7 @@ public class MongoEventStoreAdapter implements EventStorePort {
                         .map(event -> {
                             Document document = new Document();
                             document.put("aggregateId", aggregateId);
-                            document.put("type", event.type());
+                            document.put("type", event.type().name());
                             document.put("occurredOn", event.occurredOn().toString());
                             document.put("payload", event);
                             return document;
@@ -39,26 +40,17 @@ public class MongoEventStoreAdapter implements EventStorePort {
     @Override
     public Flux<Event> getEvents(String aggregateId) {
         Query query = new Query(Criteria.where("aggregateId").is(aggregateId));
-        Flux<Document> documents = this.mongoTemplate.find(query, Document.class, "events");
-        return documents.map(document -> {
-            String type = document.getString("type");
-            Document payload = document.get("payload", Document.class);
-            return deserialize(type, payload);
-        });
+        return this.mongoTemplate.find(query, Document.class, "events")
+                .map(this::deserialize);
     }
 
-    private Event deserialize(String type, Document payload) {
-        switch (type) {
-            case "AccountCreated" -> {
-                return new AccountCreated(payload.getString("accountId"));
-            }
-            case "MoneyDeposited" -> {
-                return new MoneyDeposited(payload.getString("accountId"), payload.getDouble("amount"));
-            }
-            case "MoneyWithdrawn" -> {
-                return new MoneyWithdrawn(payload.getString("accountId"), payload.getDouble("amount"));
-            }
-            default -> throw new IllegalArgumentException("Unknown event type: " + type);
-        }
+    private Event deserialize(Document document) {
+        EventType type = EventType.valueOf(document.getString("type"));
+        Document payload = document.get("payload", Document.class);
+        return switch (type) {
+            case ACCOUNT_CREATED -> new AccountCreated(payload.getString("accountId"));
+            case MONEY_DEPOSITED -> new MoneyDeposited(payload.getString("accountId"), payload.getDouble("amount"));
+            case MONEY_WITHDRAWN -> new MoneyWithdrawn(payload.getString("accountId"), payload.getDouble("amount"));
+        };
     }
 }

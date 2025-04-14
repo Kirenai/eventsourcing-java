@@ -6,7 +6,13 @@ public sealed interface Event permits
         AccountCreated,
         MoneyDeposited,
         MoneyWithdrawn {
-    String type();
+    EventType type();
 
     Instant occurredOn();
+
+    enum EventType {
+        ACCOUNT_CREATED,
+        MONEY_DEPOSITED,
+        MONEY_WITHDRAWN
+    }
 }
