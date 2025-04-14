@@ -27,7 +27,7 @@ public class MongoEventStoreAdapter implements EventStorePort {
                         .map(event -> {
                             Document document = new Document();
                             document.put("aggregateId", aggregateId);
-                            document.put("type", event.getType());
+                            document.put("type", event.type());
                             document.put("occurredOn", event.occurredOn().toString());
                             document.put("payload", event);
                             return document;

@@ -6,7 +6,7 @@ public sealed interface Event permits
         AccountCreated,
         MoneyDeposited,
         MoneyWithdrawn {
-    String getType();
+    String type();
 
     Instant occurredOn();
 }

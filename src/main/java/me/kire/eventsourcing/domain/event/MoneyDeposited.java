@@ -7,7 +7,7 @@ public record MoneyDeposited(
         Double amount
 ) implements Event {
     @Override
-    public String getType() {
+    public String type() {
         return "MoneyDeposited";
     }
 

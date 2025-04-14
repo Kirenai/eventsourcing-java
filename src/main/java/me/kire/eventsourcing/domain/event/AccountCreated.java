@@ -7,7 +7,7 @@ public record AccountCreated(
 ) implements Event {
 
     @Override
-    public String getType() {
+    public String type() {
         return "AccountCreated";
     }
 
