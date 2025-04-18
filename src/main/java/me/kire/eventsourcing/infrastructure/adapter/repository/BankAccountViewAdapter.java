@@ -29,8 +29,10 @@ public class BankAccountViewAdapter implements BankAccountViewPort {
         Query query = new Query(Criteria.where("accountId").is(accountId));
         return this.mongoTemplate.findOne(query, Document.class, "bank_account_view")
                 .map(document ->
-                        new BankAccountView(document.getString("accountId"),
-                                document.getDouble("balance"))
+                        BankAccountView.builder()
+                                .accountId(document.getString("accountId"))
+                                .balance(document.getDouble("balance"))
+                                .build()
                 );
     }
 
