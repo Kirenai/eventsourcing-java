@@ -1,4 +1,4 @@
-package me.kire.eventsourcing.application.query;
+package me.kire.eventsourcing.application.projection;
 
 import lombok.RequiredArgsConstructor;
 import me.kire.eventsourcing.domain.model.BankAccountView;
@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class BankAccountQueryService {
+public class BankAccountProjection {
     private final GetOneBankAccountPort getOneBankAccountPort;
 
     public Mono<BankAccountView> getAccount(String id) {
