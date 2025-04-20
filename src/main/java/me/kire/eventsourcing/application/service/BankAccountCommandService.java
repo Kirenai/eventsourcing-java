@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class BankAccountService {
+public class BankAccountCommandService {
     private final DepositBankAccount depositBankAccount;
     private final CreateBankAccount createBankAccount;
     private final WithdrawBankAccount withdrawBankAccount;
